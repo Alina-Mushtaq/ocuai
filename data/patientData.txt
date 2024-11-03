@@ -1,3 +1,0 @@
-{"regID":71220863892491370000,"patientName":"Alina","dob":"2002-08-19","age":"22 Years 3 Months","regDate":"11/3/2024","block":"Inpatient","hospitalName":"General Hospital"}
-{"regID":92181793486087630000,"patientName":"","dob":"","age":"","regDate":"11/3/2024","block":"Inpatient","hospitalName":"General Hospital"}
-{"regID":75839658120657580000,"patientName":"Alina","dob":"2002-08-19","age":"22 Years 3 Months","regDate":"11/3/2024","block":"Inpatient","hospitalName":"General Hospital"}

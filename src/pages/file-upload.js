@@ -41,13 +41,13 @@ export default function FileUpload() {
   
       if (response.ok) {
         const result = await response.json();
-        alert(result.message); // Success message from backend
+        console.log(result.message); // Success message from backend
       } else {
-        alert('Error in processing the images.'); // Alert error message
+        console.log('Error in processing the images.'); // console.log error message
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred. Please try again.'); // Alert error message
+      console.log('An error occurred. Please try again.'); // Alert error message
     } finally {
       setIsLoading(false); // End loading state
       setIsModalVisible(false); // Close modal after generation

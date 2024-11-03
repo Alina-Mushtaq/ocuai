@@ -8,6 +8,8 @@ import { doc, setDoc } from 'firebase/firestore';
 export default function PatientDetails() {
   const router = useRouter(); 
   const [patientName, setPatientName] = useState('');
+  const [showConditionDropdown, setShowConditionDropdown] = useState(false); // Controls dropdown visibility
+  const [condition, setCondition] = useState('Normal (N)'); // Default condition
   const [dob, setDob] = useState('');
   const [age, setAge] = useState('');
   const [block, setBlock] = useState('Inpatient');
@@ -69,6 +71,7 @@ export default function PatientDetails() {
         regDate, 
         block, 
         hospitalName, 
+        condition, 
         createdAt: new Date() // Add this line to set the createdAt timestamp
     };
     const expirationTime = new Date().getTime() + 10 * 60 * 1000;
@@ -102,11 +105,31 @@ export default function PatientDetails() {
       </div>
 
       <div className="bg-white relative p-6 rounded-lg shadow-md">
-        <div className="bg-[#003366] flex justify-center items-center p-6 rounded-t-lg text-white relative">
+        <div className="bg-[#003366] flex justify-center items-center p-6 rounded-t-lg text-white relative" onClick={() => setShowConditionDropdown(!showConditionDropdown)}>
           <h1 className="text-2xl font-bold sm:text-xl md:text-xl">Patient Details</h1>
         </div>
         <form className="space-y-4 mt-8" onSubmit={handleSubmit}>
           <div>
+          {showConditionDropdown && ( // Render dropdown if visible
+  <div className="mt-4">
+    <label className="block mb-1">Select Condition</label>
+    <select 
+      value={condition}
+      onChange={(e) => setCondition(e.target.value)}
+      className="w-full p-2 border border-gray-300 rounded-md"
+    >
+      <option value="Normal (N)">Normal (N)</option>
+      <option value="Diabetes (D)">Diabetes (D)</option>
+      <option value="Glaucoma (G)">Glaucoma (G)</option>
+      <option value="Cataract (C)">Cataract (C)</option>
+      <option value="Age related Macular Degeneration (A)">Age related Macular Degeneration (A)</option>
+      <option value="Hypertension (H)">Hypertension (H)</option>
+      <option value="Pathological Myopia (M)">Pathological Myopia (M)</option>
+      <option value="Other diseases/abnormalities (O)">Other diseases/abnormalities (O)</option>
+    </select>
+  </div>
+)}
+
             <label className="block mb-1">Patient Name</label>
             <input 
               type="text" 
