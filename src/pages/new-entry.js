@@ -117,7 +117,7 @@ export default function PatientDetails() {
   <div className="bg-[#003366] flex justify-center items-center p-6 rounded-t-lg text-white relative">
     <h1 className="text-2xl font-bold sm:text-xl md:text-xl">Patient Details</h1>
         </div>
-        <form className="space-y-4 mt-8" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-4 mt-8" onSubmit={handleSubmit}>
           {/* Patient Name */}
           <div>
             <label className="block mb-1">Patient Name</label>
