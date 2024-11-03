@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { db } from './firebase/firebaseconfig'; // Adjust the path as necessary
+import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
 export default function PDFPage() {
   const [patientDetails, setPatientDetails] = useState(null);
@@ -14,12 +16,19 @@ export default function PDFPage() {
 
   useEffect(() => {
     const fetchPatientData = async () => {
-      const response = await fetch('/api/getPatientData');
-      if (response.ok) {
-        const data = await response.json();
-        setPatientDetails(data);
-      } else {
-        console.error('Failed to fetch patient data');
+      try {
+        const patientCollection = collection(db, 'patients'); // Reference to the 'patients' collection
+        const patientQuery = query(patientCollection, orderBy('createdAt', 'desc'), limit(1)); // Query to get the most recent patient
+        const querySnapshot = await getDocs(patientQuery);
+
+        if (!querySnapshot.empty) {
+          const data = querySnapshot.docs[0].data();
+          setPatientDetails(data);
+        } else {
+          console.error('No patient data found!');
+        }
+      } catch (error) {
+        console.error('Error fetching patient data:', error);
       }
     };
 
@@ -37,12 +46,12 @@ export default function PDFPage() {
 
     // Add patient details
     doc.setFontSize(14);
-    doc.text(`Registration Application ID: ${patientDetails.registrationID}`, 10, 60);
-    doc.text(`Name: ${patientDetails.name}`, 10, 70);
-    doc.text(`Age: ${patientDetails.age}`, 10, 80);
-    doc.text(`Date of Birth: ${patientDetails.dob}`, 10, 90); // Assuming you want to add DOB
-    doc.text(`Block: ${patientDetails.block}`, 10, 100); // Assuming you want to add Block
-    doc.text(`Hospital Name: ${patientDetails.hospital}`, 10, 110); // Assuming you want to add Hospital
+    doc.text(`Registration Application ID: ${patientDetails.regID}`, 10, 60); // Updated field name based on your structure
+    doc.text(`Name: ${patientDetails.patientName}`, 10, 70); // Updated field name based on your structure
+    doc.text(`Age: ${patientDetails.age}`, 10, 80); // Assuming age is stored in Firestore
+    doc.text(`Date of Birth: ${patientDetails.dob}`, 10, 90); // Assuming DOB is stored in Firestore
+    doc.text(`Block: ${patientDetails.block}`, 10, 100); // Assuming block is stored in Firestore
+    doc.text(`Hospital Name: ${patientDetails.hospitalName}`, 10, 110); // Assuming hospital name is stored in Firestore
 
     // Add the result message
     doc.text('RESULT:', 10, 140);

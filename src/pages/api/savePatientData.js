@@ -1,34 +1,35 @@
-import fs from 'fs';
-import path from 'path';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
 
-// Define the path to the JSON file
-const filePath = path.join(process.cwd(), 'data', 'patients.json');
+const firebaseConfig = {
+  apiKey: "AIzaSyCAcesLW-nu96NUqBfWBRMeigurbeEgj68",
+  authDomain: "ocuai-7d1ca.firebaseapp.com",
+  projectId: "ocuai-7d1ca",
+  storageBucket: "ocuai-7d1ca.firebasestorage.app",
+  messagingSenderId: "809042679791",
+  appId: "1:809042679791:web:cf5c63693832ad8215481a",
+  measurementId: "G-19NFZJ3D7J"
+};
 
-export default function handler(req, res) {
+// Initialize Firebase app
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const newData = req.body;
+    try {
+      const patientData = req.body;
 
-    // Read existing data from the JSON file
-    fs.readFile(filePath, 'utf8', (err, data) => {
-      if (err && err.code !== 'ENOENT') {
-        return res.status(500).json({ message: 'Failed to read data' });
-      }
-
-      // Parse existing data or create an empty array if the file doesn't exist
-      const existingData = data ? JSON.parse(data) : [];
-
-      // Append new data
-      existingData.push(newData);
-
-      // Write updated data back to the JSON file
-      fs.writeFile(filePath, JSON.stringify(existingData, null, 2), (writeErr) => {
-        if (writeErr) {
-          return res.status(500).json({ message: 'Failed to save data' });
-        }
-        res.status(200).json({ message: 'Data saved successfully' });
-      });
-    });
+      // Save patient data to Firestore
+      const docRef = await addDoc(collection(db, 'patients'), patientData);
+      console.log('Document written with ID: ', docRef.id);
+      res.status(200).json({ id: docRef.id, message: 'Data saved successfully' });
+    } catch (error) {
+      console.error('Error saving patient data:', error);
+      res.status(500).json({ message: 'Failed to save data', error: error.message });
+    }
   } else {
+    // Handle any other HTTP method
     res.setHeader('Allow', ['POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }

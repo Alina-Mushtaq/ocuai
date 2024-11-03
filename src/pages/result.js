@@ -2,18 +2,28 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { db } from './firebase/firebaseconfig'; // Import your Firestore configuration
+import { collection, getDocs, orderBy, limit, query } from 'firebase/firestore'; // Add 'query' here
+
 
 export default function ReportPage() {
   const [patientDetails, setPatientDetails] = useState(null);
 
   useEffect(() => {
     const fetchPatientData = async () => {
-      const response = await fetch('/api/getPatientData');
-      if (response.ok) {
-        const data = await response.json();
-        setPatientDetails(data);
-      } else {
-        console.error('Failed to fetch patient data');
+      try {
+        const patientCollection = collection(db, 'patients'); // Reference to your patients collection
+        const patientQuery = query(patientCollection, orderBy('createdAt', 'desc'), limit(1)); // Adjust field name for timestamp
+        const querySnapshot = await getDocs(patientQuery);
+        
+        if (!querySnapshot.empty) {
+          const lastPatientData = querySnapshot.docs[0].data();
+          setPatientDetails(lastPatientData);
+        } else {
+          console.error('No patient data found');
+        }
+      } catch (error) {
+        console.error('Failed to fetch patient data from Firestore:', error);
       }
     };
 
@@ -30,13 +40,13 @@ export default function ReportPage() {
       <div className="bg-white p-8 shadow-2xl rounded-lg w-full max-w-xl space-y-6">
         <div className="p-6 space-y-2">
           <h2 className="text-xl font-semibold mb-4">Patient Details</h2>
-          <p><strong>Registration Application ID:</strong> {patientDetails.registrationID}</p>
-          <p><strong>Name:</strong> {patientDetails.name}</p>
+          <p><strong>Registration Application ID:</strong> {patientDetails.regID}</p>
+          <p><strong>Name:</strong> {patientDetails.patientName}</p>
           <p><strong>Date of Birth:</strong> {patientDetails.dob}</p>
           <p><strong>Age:</strong> {patientDetails.age}</p>
           <p><strong>Registration Date:</strong> {patientDetails.regDate}</p>
           <p><strong>Block:</strong> {patientDetails.block}</p>
-          <p><strong>Hospital Name:</strong> {patientDetails.hospital}</p>
+          <p><strong>Hospital Name:</strong> {patientDetails.hospitalName}</p>
         </div>
 
         <div className="flex flex-col items-center space-y-2">

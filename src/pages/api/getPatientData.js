@@ -1,37 +1,28 @@
-import fs from 'fs';
-import path from 'path';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
 
-// Define the path to the JSON file
-const filePath = path.join(process.cwd(), 'data', 'patients.json');
+const firebaseConfig = {
+    apiKey: "AIzaSyCAcesLW-nu96NUqBfWBRMeigurbeEgj68",
+    authDomain: "ocuai-7d1ca.firebaseapp.com",
+    projectId: "ocuai-7d1ca",
+    storageBucket: "ocuai-7d1ca.firebasestorage.app",
+    messagingSenderId: "809042679791",
+    appId: "1:809042679791:web:cf5c63693832ad8215481a",
+    measurementId: "G-19NFZJ3D7J"
+};
 
-export default function handler(req, res) {
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      return res.status(500).json({ message: 'Failed to read data' });
-    }
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    // Parse the data
-    const entries = data ? JSON.parse(data) : [];
+export default async function handler(req, res) {
+  if (req.method === 'GET') {
+    const patientsCol = collection(db, 'patients');
+    const patientSnapshot = await getDocs(patientsCol);
+    const patientList = patientSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    // Check if there are any entries
-    if (entries.length === 0) {
-      return res.status(404).json({ message: 'No patient data found' });
-    }
-
-    // Get the latest entry (assuming the last one is the most recent)
-    const latestEntry = entries[entries.length - 1];
-    
-    // Structure the response to match the desired format
-    const patientData = {
-      registrationID: latestEntry.regID,
-      name: latestEntry.patientName,
-      age: latestEntry.age,
-      dob: latestEntry.dob,
-      regDate: latestEntry.regDate,
-      block: latestEntry.block,
-      hospital: latestEntry.hospitalName,
-    };
-
-    res.status(200).json(patientData);
-  });
+    res.status(200).json(patientList);
+  } else {
+    res.setHeader('Allow', ['GET']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
 }
