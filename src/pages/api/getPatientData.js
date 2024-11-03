@@ -1,16 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 
-export default function handler(req, res) {
-  const filePath = path.join(process.cwd(), 'data', 'patientData.txt');
+// Define the path to the JSON file
+const filePath = path.join(process.cwd(), 'data', 'patients.json');
 
+export default function handler(req, res) {
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
       return res.status(500).json({ message: 'Failed to read data' });
     }
 
-    // Split the data into an array of entries
-    const entries = data.trim().split('\n').map(line => JSON.parse(line));
+    // Parse the data
+    const entries = data ? JSON.parse(data) : [];
 
     // Check if there are any entries
     if (entries.length === 0) {
