@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { db } from './firebase/firebaseconfig'; // Import your Firestore configuration
+import { db } from '../firebase/firebaseconfig'; // Import your Firestore configuration
 import { collection, getDocs, orderBy, limit, query } from 'firebase/firestore'; // Add 'query' here
 
 

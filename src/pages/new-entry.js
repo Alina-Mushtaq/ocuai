@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDays, faCircleRight } from '@fortawesome/free-regular-svg-icons';
 import { useRouter } from 'next/router';
-import { db } from './firebase/firebaseconfig'; // Adjust the import based on your project structure
+import { db } from '../firebase/firebaseconfig'; // Adjust the import based on your project structure
 import { doc, setDoc } from 'firebase/firestore';
 
 export default function PatientDetails() {

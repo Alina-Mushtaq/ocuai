@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { db } from './firebase/firebaseconfig'; // Adjust the path as necessary
+import { db } from '../firebase/firebaseconfig'; // Adjust the path as necessary
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
 export default function PDFPage() {
