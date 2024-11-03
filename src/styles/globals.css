@@ -1,21 +1,35 @@
+/* styles/globals.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Gradient background for body */
+html, body {
+  margin: 0; /* Prevent margin issues */
+  min-height: 100%; /* Ensure the body takes full height at least */
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  background: linear-gradient(to top right, #ffeb3b, #81d4fa); /* Yellow to light blue gradient */
+  background-repeat: no-repeat; /* Prevent gradient from repeating */
+  background-size: cover; /* Ensure gradient covers the entire area */
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+#__next {
+  display: flex; /* Use flex to allow children to expand */
+  flex-direction: column; /* Stack children vertically */
+  min-height: 100vh; /* Ensure Next.js app content covers the full viewport */
+}
+
+/* Footer styles */
+footer {
+  background-color: #7c3aed; /* Purple background */
+  color: white; /* Text color */
+  text-align: center; /* Center align text */
+  padding: 1rem; /* Space inside the footer */
+  width: 100%; /* Make sure the footer takes the full width */
+  position: relative; /* Ensure footer is at the bottom */
 }
